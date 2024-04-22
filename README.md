@@ -6,7 +6,7 @@ with the SQLite database to record transactions.
 
 The website includes:
   - Home page to greet the user;
-  - Income Statement page which is in development (at the moment, empty);
+  - Income Statement page which is in development (has Revenue, Expenses, and calculates Profit);
   - Balance Sheet page with all the required Assets, Liabilities, and Equities accounts listed in a table;
   - Transaction History page with the record of all transactions;
   - A html5 theme, and a set of images to make the website nicer;
