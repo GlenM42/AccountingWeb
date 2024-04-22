@@ -4,6 +4,7 @@ __pycache__
 *.pyd
 .Python
 .env
+help.txt
 .venv
 env/
 venv/

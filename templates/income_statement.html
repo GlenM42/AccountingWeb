@@ -31,22 +31,76 @@ NOT IN USE
 
 				<!-- Main -->
 					<div id="main">
-
-						<!-- Content -->
-							<section id="content" class="main">
-								<span class="image main"><img src="{% static 'html5up-stellar/images/pic00.jpg' %}" alt="" /></span>
-								<h2>This part is yet to be done</h2>
-								<p>So far the functionality is supposed to include just a couple of links. Here is the website navigation:</p>
+        
+                        <!-- Content -->
+                        {% if user.is_authenticated %}
+                            <section id="content" class="main">
+                                <span class="image main"><img src="{% static 'html5up-stellar/images/pic07.jpg' %}" alt="" /></span>
+                                <h2>Financial Summary</h2>
+                                <p>This section provides a comprehensive view of the financial health over the selected period.</p>
+                                
+                                <!-- Navigation Links -->
                                 <ul>
                                     <li><a href="{% url 'home' %}">Home</a></li>
                                     <li><a href="{% url 'balance_sheet' %}">Balance Sheet</a></li>
-                                    <li><a href="{% url 'income_statement' %}">Income Statement</a></li>
-                                    <li><a href="{% url 'new_transaction' %}">New Transaction</a></li>
                                     <li><a href="{% url 'transaction_history' %}">Transaction History</a></li>
+                                    <li><a href="{% url 'new_transaction' %}">New Transaction</a></li>
                                     <li><a href="{% url 'admin:index' %}">Admin</a></li>
                                 </ul>
-							</section>
-					</div>
+        
+                                <!-- Financial Data Table -->
+                                <div class="table-wrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Total Amount</th>
+                                            <th>Relative Weight (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Total Revenue</td>
+                                            <td>${{ total_revenue|floatformat:2 }}</td>
+                                            <td>100%</td>
+                                        </tr>
+                                        {% for revenue in revenue_details %}
+                                        <tr>
+                                            <td style="font-style: italic; padding-left: 50px;">{{ revenue.credit }}</td>
+                                            <td>${{ revenue.total_amount|floatformat:2 }}</td>
+                                            <td>{{ revenue.relative_weight|floatformat:2 }}%</td>
+                                        </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td>Total Expenses</td>
+                                            <td>${{ total_expenses|floatformat:2 }}</td>
+                                            <td>100%</td>
+                                        </tr>
+                                        {% for expense in expense_details %}
+                                        <tr style="font-style: italic; padding-left: 50px;">
+                                            <td style="font-style: italic; padding-left: 50px;">{{ expense.debit }}</td>
+                                            <td>${{ expense.total_amount|floatformat:2 }}</td>
+                                            <td>{{ expense.relative_weight|floatformat:2 }}%</td>
+                                        </tr>
+                                        {% endfor %}
+                                        <tr>
+                                            <td><strong>Profit</strong></td>
+                                            <td>${{ profit|floatformat:2 }}</td>
+                                            <td>{{ profit_weight|floatformat:2 }}%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+        
+                                <!-- Potential Addition: Dynamic Graphs and Charts -->
+                                <!-- Include interactive data visualizations here using Plotly.js or similar library -->
+        
+                            </section>
+                        {% else %}
+                            <p>You are not an authenticated user! Access is denied.</p>
+                        {% endif %}
+        
+                    </div>
 
 				<!-- Footer -->
 					<footer id="footer">

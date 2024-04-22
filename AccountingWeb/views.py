@@ -2,6 +2,7 @@ from django.contrib.auth.views import LoginView
 from .models import Account, Transaction
 from django.shortcuts import render, redirect
 from decimal import Decimal
+from django.db.models import Sum
 
 debitAccounts = ["Food Expenses", "Cash", "DC-Checking Account", "Vanguard Money Fund", "Vanguard Brokerage Account",
                  "DC-Savings Account", "Utilities Expenses", "Entertainment Expenses", "General Asset Account"]
@@ -91,4 +92,33 @@ def new_transaction_view(request):
 
 
 def income_statement_view(request):
-    return render(request, 'income_statement.html')
+    # Lists of account names for revenues and expenses
+    revenue_accounts = ["Revenue-Tutoring", "Revenue-XO", "Salary Income", "Gift Income", "Investment Income"]
+    expense_accounts = ["Utilities Expenses", "Food Expenses", "Entertainment Expenses"]
+
+    # Retrieve and aggregate total revenue and expenses for each category
+    revenue_details = (Transaction.objects.filter(credit__in=revenue_accounts).values('credit').annotate(total_amount=Sum('dollar_amount')).order_by('total_amount'))
+    expense_details = (Transaction.objects.filter(debit__in=expense_accounts).values('debit').annotate(total_amount=Sum('dollar_amount')).order_by('total_amount'))
+
+    # Calculate total revenue and total expenses
+    total_revenue = sum(item['total_amount'] for item in revenue_details)
+    total_expenses = sum(item['total_amount'] for item in expense_details)
+    profit = total_revenue - total_expenses
+
+    for item in revenue_details:
+        item['relative_weight'] = (item['total_amount'] / total_revenue) * 100 if total_revenue else 0
+    for item in expense_details:
+        item['relative_weight'] = (item['total_amount'] / total_expenses) * 100 if total_expenses else 0
+    profit_weight = (profit / total_revenue) * 100 if total_revenue else 0
+
+    # Prepare data for rendering
+    context = {
+        'total_revenue': total_revenue,
+        'total_expenses': total_expenses,
+        'profit': profit,
+        'revenue_details': revenue_details,
+        'profit_weight': profit_weight,
+        'expense_details': expense_details,
+    }
+
+    return render(request, 'income_statement.html', context)

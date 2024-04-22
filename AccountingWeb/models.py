@@ -25,7 +25,7 @@ TRANSACTION_CHOICES = [
     ("General Asset Account", "General Asset Account"),
     ("General Equity Account", "General Equity Account"),
     ("General Liability Account", "General Liability Account"),
-]
+].sort()
 
 
 class Account(models.Model):
