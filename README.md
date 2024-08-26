@@ -12,4 +12,35 @@ The website includes:
   - A html5 theme, and a set of images to make the website nicer;
   - The html is handled by the nginx.
 
-The application is dockerized, but the docker-compose.yml is not included for the security concerns. 
+# Usage
+
+After copying the repo you need to get all requirements:
+```
+pip install -r requirements.txt
+```
+
+If you need to run the application locally, you would need a .env file with this configuration:
+```
+DB_ENGINE=...
+DB_NAME=...
+SECRET_KEY=...
+DEBUG=...
+```
+
+Otherwise, put your information in the docker-compose.yml:
+```
+name: accountingweb
+services:
+    accountingweb:
+        ports:
+            - 80:8000
+        environment:
+            - DB_ENGINE=...
+            - DB_NAME=...
+            - SECRET_KEY='...
+            - DEBUG=...
+        image: ...
+        restart: always
+        volumes:
+          - ${PWD}... # <- this is for mirroring the db
+```
