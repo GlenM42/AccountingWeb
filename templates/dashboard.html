@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{.Username}}</h1>
+    <h2>Accounts</h2>
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Normal Balance</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Accounts}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.AccountType}}</td>
+                <td>{{.DebitOrCredit}}</td>
+                <td>{{.Balance}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+</html>
