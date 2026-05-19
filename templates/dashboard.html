@@ -6,26 +6,9 @@
 </head>
 <body>
     <h1>Welcome, {{.Username}}</h1>
-    <h2>Accounts</h2>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Normal Balance</th>
-                <th>Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{range .Accounts}}
-            <tr>
-                <td>{{.Name}}</td>
-                <td>{{.AccountType}}</td>
-                <td>{{.DebitOrCredit}}</td>
-                <td>{{.Balance}}</td>
-            </tr>
-            {{end}}
-        </tbody>
-    </table>
+    <form method="POST" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
+    <p>Hello, {{.Username}}! We're glad to have you here.</p>
 </body>
 </html>

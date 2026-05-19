@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction History</title>
+</head>
+<body>
+    <h1>Transaction History</h1>
+
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{if .Transactions}}
+                {{range .Transactions}}
+                <tr>
+                    <td>{{.Date}}</td>
+                    <td>{{.Debit}}</td>
+                    <td>{{.Credit}}</td>
+                    <td>{{.Description}}</td>
+                    <td>${{.Amount}}</td>
+                </tr>
+                {{end}}
+            {{else}}
+                <tr><td colspan="5">No transactions yet.</td></tr>
+            {{end}}
+        </tbody>
+    </table>
+
+    <p><a href="/dashboard">Back to dashboard</a></p>
+</body>
+</html>

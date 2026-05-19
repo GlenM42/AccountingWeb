@@ -3,8 +3,10 @@ package crypto
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"io"
 
 	"golang.org/x/crypto/argon2"
 )
@@ -64,6 +66,28 @@ func UnwrapDEK(kek []byte, wrappedB64, ivB64 string) ([]byte, error) {
 	}
 
 	return dek, nil
+}
+
+// EncryptField encrypts a plaintext string with AES-GCM using the provided DEK.
+// A random 12-byte nonce is generated for each call — never reuse a nonce with the same key.
+func EncryptField(dek []byte, plaintext string) (ct []byte, iv []byte, err error) {
+	block, err := aes.NewCipher(dek)
+	if err != nil {
+		return nil, nil, fmt.Errorf("create cipher: %w", err)
+	}
+
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, nil, fmt.Errorf("create GCM: %w", err)
+	}
+
+	nonce := make([]byte, gcm.NonceSize()) // 12 bytes for GCM
+	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, nil, fmt.Errorf("generate nonce: %w", err)
+	}
+
+	ciphertext := gcm.Seal(nil, nonce, []byte(plaintext), nil)
+	return ciphertext, nonce, nil
 }
 
 // DecryptField decrypts a single AES-GCM encrypted field.

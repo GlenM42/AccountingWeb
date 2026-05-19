@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Balance Sheet</title>
+</head>
+<body>
+    <h1>Balance Sheet</h1>
+
+    <h2>Assets</h2>
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr><th>Name</th><th>Balance</th></tr>
+        </thead>
+        <tbody>
+            {{range .Assets}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>${{.Balance}}</td>
+            </tr>
+            {{end}}
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>${{.TotalAssets}}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Liabilities</h2>
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr><th>Name</th><th>Balance</th></tr>
+        </thead>
+        <tbody>
+            {{range .Liabilities}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>${{.Balance}}</td>
+            </tr>
+            {{end}}
+            <tr>
+                <td><strong>Total</strong></td>
+                <td><strong>${{.TotalLiabilities}}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Equity</h2>
+    <table border="1" cellpadding="6">
+        <tbody>
+            <tr>
+                <td><strong>Total Equity (Assets − Liabilities)</strong></td>
+                <td><strong>${{.TotalEquity}}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p><a href="/dashboard">Back to dashboard</a></p>
+</body>
+</html>

@@ -84,6 +84,15 @@ func LoginPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }
 
+func LogoutPost(w http.ResponseWriter, r *http.Request) {
+	session, err := appmiddleware.GetSession(r)
+	if err == nil {
+		session.Options.MaxAge = -1
+		session.Save(r, w)
+	}
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
 // verifyPassword checks a plaintext password against a Django PBKDF2-SHA256 hash.
 // Django format: pbkdf2_sha256$<iterations>$<salt>$<hash>
 func verifyPassword(password, encoded string) bool {

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Transaction</title>
+</head>
+<body>
+    <h1>New Transaction</h1>
+
+    {{if .Error}}
+        <p style="color:red;">{{.Error}}</p>
+    {{end}}
+
+    <form method="POST" action="/new_transaction">
+        <div>
+            <label for="transaction_date">Date:</label>
+            <input type="date" id="transaction_date" name="transaction_date" required>
+        </div>
+        <div>
+            <label for="debit_account_id">Debit Account:</label>
+            <select id="debit_account_id" name="debit_account_id" required>
+                <option value="">-- Select account --</option>
+                {{range .Accounts}}
+                <option value="{{.ID}}">{{.Name}}</option>
+                {{end}}
+            </select>
+        </div>
+        <div>
+            <label for="credit_account_id">Credit Account:</label>
+            <select id="credit_account_id" name="credit_account_id" required>
+                <option value="">-- Select account --</option>
+                {{range .Accounts}}
+                <option value="{{.ID}}">{{.Name}}</option>
+                {{end}}
+            </select>
+        </div>
+        <div>
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description">
+        </div>
+        <div>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+        </div>
+        <button type="submit">Save Transaction</button>
+    </form>
+
+    <p><a href="/transaction_history">Cancel</a></p>
+</body>
+</html>

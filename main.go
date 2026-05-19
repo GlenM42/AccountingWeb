@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -18,10 +17,6 @@ func main() {
 	godotenv.Load() // Load .env file into environment variables
 	appmiddleware.InitStore() // now SESSION_SECRET is loaded
 
-	if err := db.Init(); err != nil {
-		log.Fatalf("DB init failed: %v\n", err)
-	}
-
 	// Ensure DB connection first
 	if err := db.Init(); err != nil {
 		// log.Fatalf will print and call `os.Exit(1)`
@@ -35,19 +30,22 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello from accounting app!")
-	})
-
+	r.Get("/", handlers.LoginGet)
+	r.Get("/dashboard", handlers.DashboardGet)
 	r.Get("/login", handlers.LoginGet)
 	r.Post("/login", handlers.LoginPost)
+	r.Post("/logout", handlers.LogoutPost)
 
 	// Routes protected by the middleware RequireAuth
 	r.Group(func(r chi.Router) {
 		r.Use(appmiddleware.RequireAuth)
-		r.Get("/dashboard", handlers.DashboardGet)
+		r.Get("/balance_sheet", handlers.BalanceSheetGet)
+		r.Get("/transaction_history", handlers.TransactionHistoryGet)
+		r.Get("/new_transaction", handlers.NewTransactionGet)
+		r.Post("/new_transaction", handlers.NewTransactionPost)
+		r.Get("/income_statement", handlers.IncomeStatementGet)
 	})
 
-	fmt.Println("Listening on http://localhost:8080")
+	log.Println("Listening on http://localhost:8080")
 	http.ListenAndServe(":8080", r)
 }
