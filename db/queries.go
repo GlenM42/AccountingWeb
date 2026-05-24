@@ -152,6 +152,32 @@ func GetAccountsByType(ctx context.Context, userID int, accountType string) ([]m
 	return accounts, nil
 }
 
+func GetAccountByID(ctx context.Context, userID, accountID int) (*models.Account, error) {
+	row := Pool.QueryRow(ctx, `
+		SELECT a.id, a.name, a.account_type, a.debit_or_credit, a.balance_ct, a.balance_iv
+		FROM accounts a
+		JOIN account_users au ON au.account_id = a.id
+		WHERE a.id = $1 AND au.user_id = $2
+	`, accountID, userID)
+
+	var a models.Account
+	if err := row.Scan(&a.ID, &a.Name, &a.AccountType, &a.DebitOrCredit, &a.BalanceCT, &a.BalanceIV); err != nil {
+		return nil, fmt.Errorf("get account %d: %w", accountID, err)
+	}
+	return &a, nil
+}
+
+func UpdateAccountBalance(ctx context.Context, accountID int, balanceCT, balanceIV []byte) error {
+	_, err := Pool.Exec(ctx,
+		"UPDATE accounts SET balance_ct = $1, balance_iv = $2 WHERE id = $3",
+		balanceCT, balanceIV, accountID,
+	)
+	if err != nil {
+		return fmt.Errorf("update account %d balance: %w", accountID, err)
+	}
+	return nil
+}
+
 func GetAccountsByUserID(ctx context.Context, userID int) ([]models.Account, error) {
 	rows, err := Pool.Query(ctx, `
 		SELECT a.id, a.name, a.account_type, a.debit_or_credit, a.balance_ct, a.balance_iv

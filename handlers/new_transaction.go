@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/base64"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -102,7 +103,58 @@ func NewTransactionPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	amt, _ := strconv.ParseFloat(amount, 64) // already validated above
+
+	if err := applyBalanceUpdate(r, userID, dek, debitID, amt, true); err != nil {
+		log.Printf("new transaction: update debit balance: %v", err)
+		http.Error(w, "Failed to update account balance", http.StatusInternalServerError)
+		return
+	}
+	if err := applyBalanceUpdate(r, userID, dek, creditID, amt, false); err != nil {
+		log.Printf("new transaction: update credit balance: %v", err)
+		http.Error(w, "Failed to update account balance", http.StatusInternalServerError)
+		return
+	}
+
 	http.Redirect(w, r, "/transaction_history", http.StatusSeeOther)
+}
+
+// applyBalanceUpdate fetches an account, adjusts its encrypted balance by amt,
+// and writes it back. isDebit=true means this account is the debit side of the
+// transaction; the sign depends on whether the account's normal balance side matches.
+func applyBalanceUpdate(r *http.Request, userID int, dek []byte, accountID int, amt float64, isDebit bool) error {
+	acct, err := db.GetAccountByID(r.Context(), userID, accountID)
+	if err != nil {
+		return fmt.Errorf("fetch account %d: %w", accountID, err)
+	}
+
+	balanceStr, err := crypto.DecryptField(dek, acct.BalanceCT, acct.BalanceIV)
+	if err != nil {
+		return fmt.Errorf("decrypt balance for account %d: %w", accountID, err)
+	}
+
+	current, err := strconv.ParseFloat(balanceStr, 64)
+	if err != nil {
+		return fmt.Errorf("parse balance for account %d: %w", accountID, err)
+	}
+
+	// A debit increases accounts whose normal side is debit (assets, expenses).
+	// A credit increases accounts whose normal side is credit (liabilities, equity, revenue).
+	// If the transaction side matches the account's normal side, add; otherwise subtract.
+	normalIsDebit := acct.DebitOrCredit == "debit"
+	if isDebit == normalIsDebit {
+		current += amt
+	} else {
+		current -= amt
+	}
+
+	newBalanceStr := strconv.FormatFloat(current, 'f', 2, 64)
+	ct, iv, err := crypto.EncryptField(dek, newBalanceStr)
+	if err != nil {
+		return fmt.Errorf("encrypt new balance for account %d: %w", accountID, err)
+	}
+
+	return db.UpdateAccountBalance(r.Context(), accountID, ct, iv)
 }
 
 func renderNewTransactionError(w http.ResponseWriter, r *http.Request, userID int, msg string) {
