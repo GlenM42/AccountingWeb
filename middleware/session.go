@@ -21,6 +21,13 @@ func InitStore() {
 		panic("SESSION_SECRET environment variable is not set")
 	}
 	Store = sessions.NewCookieStore([]byte(secret))
+	Store.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   86400 * 30,
+		HttpOnly: true,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	}
 }
 
 // Helper to get the session from a request without repeating error handling
