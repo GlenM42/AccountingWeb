@@ -1,50 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>New Transaction</title>
-</head>
-<body>
-    <h1>New Transaction</h1>
+{{define "content"}}
+<div class="page-header">
+  <h4 class="page-title">New Transaction</h4>
+</div>
 
-    {{if .Error}}
-        <p style="color:red;">{{.Error}}</p>
-    {{end}}
+{{if .Error}}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <i class="fas fa-exclamation-circle me-1"></i> {{.Error}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{end}}
 
+<div class="card">
+  <div class="card-body">
     <form method="POST" action="/new_transaction">
-        <div>
-            <label for="transaction_date">Date:</label>
-            <input type="date" id="transaction_date" name="transaction_date" required>
+      <div class="mb-3">
+        <label for="transaction_date" class="form-label fw-semibold">Date</label>
+        <input type="date" id="transaction_date" name="transaction_date" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="debit_account_id" class="form-label fw-semibold">Debit Account</label>
+        <select id="debit_account_id" name="debit_account_id" class="form-select" required>
+          <option value="">-- Select account --</option>
+          {{range .Accounts}}
+          <option value="{{.ID}}">{{.Name}}</option>
+          {{end}}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="credit_account_id" class="form-label fw-semibold">Credit Account</label>
+        <select id="credit_account_id" name="credit_account_id" class="form-select" required>
+          <option value="">-- Select account --</option>
+          {{range .Accounts}}
+          <option value="{{.ID}}">{{.Name}}</option>
+          {{end}}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="description" class="form-label fw-semibold">Description</label>
+        <input type="text" id="description" name="description" class="form-control" placeholder="Optional" />
+      </div>
+      <div class="mb-4">
+        <label for="amount" class="form-label fw-semibold">Amount</label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input type="number" id="amount" name="amount" step="0.01" min="0" class="form-control" placeholder="0.00" required />
         </div>
-        <div>
-            <label for="debit_account_id">Debit Account:</label>
-            <select id="debit_account_id" name="debit_account_id" required>
-                <option value="">-- Select account --</option>
-                {{range .Accounts}}
-                <option value="{{.ID}}">{{.Name}}</option>
-                {{end}}
-            </select>
-        </div>
-        <div>
-            <label for="credit_account_id">Credit Account:</label>
-            <select id="credit_account_id" name="credit_account_id" required>
-                <option value="">-- Select account --</option>
-                {{range .Accounts}}
-                <option value="{{.ID}}">{{.Name}}</option>
-                {{end}}
-            </select>
-        </div>
-        <div>
-            <label for="description">Description:</label>
-            <input type="text" id="description" name="description">
-        </div>
-        <div>
-            <label for="amount">Amount:</label>
-            <input type="number" id="amount" name="amount" step="0.01" min="0" required>
-        </div>
-        <button type="submit">Save Transaction</button>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-1"></i> Save Transaction
+        </button>
+        <a href="/transaction_history" class="btn btn-secondary">Cancel</a>
+      </div>
     </form>
-
-    <p><a href="/transaction_history">Cancel</a></p>
-</body>
-</html>
+  </div>
+</div>
+{{end}}

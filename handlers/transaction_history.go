@@ -13,9 +13,10 @@ import (
 	appmiddleware "accountingweb/middleware"
 )
 
-var transactionHistoryTmpl = template.Must(template.ParseFiles("templates/transaction_history.html"))
+var transactionHistoryTmpl = template.Must(template.ParseFiles("templates/base.html", "templates/transaction_history.html"))
 
 type transactionHistoryPageData struct {
+	Username     string
 	Transactions []txRow
 }
 
@@ -74,5 +75,8 @@ func TransactionHistoryGet(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	transactionHistoryTmpl.Execute(w, transactionHistoryPageData{Transactions: rows})
+	transactionHistoryTmpl.ExecuteTemplate(w, "base", transactionHistoryPageData{
+		Username:     appmiddleware.GetUsername(r),
+		Transactions: rows,
+	})
 }

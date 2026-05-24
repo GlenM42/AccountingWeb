@@ -1,18 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
-    <form method="POST" action="/login">
-        <label>Username: <input type="text" name="username"></label><br>
-        <label>Password: <input type="password" name="password"></label><br>
-        <button type="submit">Login</button>
-    </form>
-    {{if .Error}}
-        <p style="color:red;">{{.Error}}</p>
-    {{end}}
-</body>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Login — Accounting</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="/theme/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/theme/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/theme/assets/css/kaiadmin.min.css" />
+    <style>
+      body { background-color: #f0f0f7; }
+    </style>
+  </head>
+  <body>
+    <div class="d-flex align-items-center justify-content-center" style="min-height:100vh;">
+      <div class="card shadow" style="width:100%;max-width:420px;">
+        <div class="card-header text-center py-4" style="background:#282a3c;">
+          <h4 class="mb-0 text-white fw-bold">Accounting App</h4>
+          <p class="mb-0 text-white-50 small">Sign in to your account</p>
+        </div>
+        <div class="card-body p-4">
+          {{if .Error}}
+          <div class="alert alert-danger py-2" role="alert">
+            <i class="fas fa-exclamation-circle me-1"></i> {{.Error}}
+          </div>
+          {{end}}
+          <form method="POST" action="/login">
+            <div class="mb-3">
+              <label for="username" class="form-label fw-semibold">Username</label>
+              <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" autofocus required />
+            </div>
+            <div class="mb-4">
+              <label for="password" class="form-label fw-semibold">Password</label>
+              <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Sign In</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="/theme/assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="/theme/assets/js/core/bootstrap.min.js"></script>
+  </body>
 </html>

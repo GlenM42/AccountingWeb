@@ -1,0 +1,182 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Accounting</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="/theme/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+
+    <script src="/theme/assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["/theme/assets/css/fonts.min.css"],
+        },
+        active: function () { sessionStorage.fonts = true; },
+      });
+    </script>
+
+    <link rel="stylesheet" href="/theme/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/theme/assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="/theme/assets/css/kaiadmin.min.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+
+      <!-- Sidebar -->
+      <div class="sidebar" data-background-color="dark">
+        <div class="sidebar-logo">
+          <div class="logo-header" data-background-color="dark">
+            <a href="/dashboard" class="logo">
+              <span style="color:white;font-size:1.1rem;font-weight:600;padding-left:.5rem;">Accounting</span>
+            </a>
+            <div class="nav-toggle">
+              <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
+              <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+            </div>
+            <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+          </div>
+        </div>
+        <div class="sidebar-wrapper scrollbar scrollbar-inner">
+          <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+              <li class="nav-item">
+                <a href="/dashboard">
+                  <i class="fas fa-home"></i>
+                  <p>Dashboard</p>
+                </a>
+              </li>
+              <li class="nav-section">
+                <span class="sidebar-mini-icon"><i class="fa fa-ellipsis-h"></i></span>
+                <h4 class="text-section">Reports</h4>
+              </li>
+              <li class="nav-item">
+                <a href="/balance_sheet">
+                  <i class="fas fa-balance-scale"></i>
+                  <p>Balance Sheet</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/income_statement">
+                  <i class="fas fa-chart-line"></i>
+                  <p>Income Statement</p>
+                </a>
+              </li>
+              <li class="nav-section">
+                <span class="sidebar-mini-icon"><i class="fa fa-ellipsis-h"></i></span>
+                <h4 class="text-section">Transactions</h4>
+              </li>
+              <li class="nav-item">
+                <a href="/transaction_history">
+                  <i class="fas fa-list"></i>
+                  <p>Transaction History</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/new_transaction">
+                  <i class="fas fa-plus-circle"></i>
+                  <p>New Transaction</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        <!-- Top Navbar -->
+        <div class="main-header">
+          <div class="main-header-logo">
+            <div class="logo-header" data-background-color="dark">
+              <a href="/dashboard" class="logo">
+                <span style="color:white;font-size:1.1rem;font-weight:600;padding-left:.5rem;">Accounting</span>
+              </a>
+              <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
+                <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+              </div>
+              <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+            </div>
+          </div>
+          <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+            <div class="container-fluid">
+              <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                <li class="nav-item topbar-user dropdown hidden-caret">
+                  <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                    <div class="avatar-sm">
+                      <span class="avatar-title rounded-circle bg-primary text-white">
+                        <i class="fas fa-user"></i>
+                      </span>
+                    </div>
+                    <span class="profile-username">
+                      <span class="op-7">Hi,</span>
+                      <span class="fw-bold">{{.Username}}</span>
+                    </span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-user animated fadeIn">
+                    <div class="dropdown-user-scroll scrollbar-outer">
+                      <li>
+                        <div class="user-box">
+                          <div class="u-text">
+                            <h4>{{.Username}}</h4>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                        <form method="POST" action="/logout" class="px-3 py-2">
+                          <button type="submit" class="btn btn-sm btn-danger w-100">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                          </button>
+                        </form>
+                      </li>
+                    </div>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+        <!-- End Top Navbar -->
+
+        <!-- Page Content -->
+        <div class="container">
+          <div class="page-inner">
+            {{template "content" .}}
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div class="container-fluid d-flex justify-content-center">
+            <div class="copyright text-muted">Accounting Web App</div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script src="/theme/assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="/theme/assets/js/core/popper.min.js"></script>
+    <script src="/theme/assets/js/core/bootstrap.min.js"></script>
+    <script src="/theme/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="/theme/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="/theme/assets/js/kaiadmin.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function () {
+        if ($('#txTable').length) {
+          $('#txTable').DataTable({ order: [[0, 'desc']] });
+        }
+      });
+    </script>
+  </body>
+</html>
+{{end}}

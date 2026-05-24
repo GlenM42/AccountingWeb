@@ -14,14 +14,15 @@ import (
 	appmiddleware "accountingweb/middleware"
 )
 
-var balanceSheetTmpl = template.Must(template.ParseFiles("templates/balance_sheet.html"))
+var balanceSheetTmpl = template.Must(template.ParseFiles("templates/base.html", "templates/balance_sheet.html"))
 
 type balanceSheetPageData struct {
-	Assets          []balanceRow
-	Liabilities     []balanceRow
-	TotalAssets     string
+	Username         string
+	Assets           []balanceRow
+	Liabilities      []balanceRow
+	TotalAssets      string
 	TotalLiabilities string
-	TotalEquity     string
+	TotalEquity      string
 }
 
 type balanceRow struct {
@@ -88,7 +89,8 @@ func BalanceSheetGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	balanceSheetTmpl.Execute(w, balanceSheetPageData{
+	balanceSheetTmpl.ExecuteTemplate(w, "base", balanceSheetPageData{
+		Username:         appmiddleware.GetUsername(r),
 		Assets:           assetRows,
 		Liabilities:      liabilityRows,
 		TotalAssets:      fmt.Sprintf("%.2f", totalAssets),

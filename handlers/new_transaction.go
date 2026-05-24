@@ -12,9 +12,10 @@ import (
 	appmiddleware "accountingweb/middleware"
 )
 
-var newTransactionTmpl = template.Must(template.ParseFiles("templates/new_transaction.html"))
+var newTransactionTmpl = template.Must(template.ParseFiles("templates/base.html", "templates/new_transaction.html"))
 
 type newTransactionPageData struct {
+	Username string
 	Accounts []accountOption
 	Error    string
 }
@@ -39,7 +40,10 @@ func NewTransactionGet(w http.ResponseWriter, r *http.Request) {
 		options = append(options, accountOption{ID: a.ID, Name: a.Name})
 	}
 
-	newTransactionTmpl.Execute(w, newTransactionPageData{Accounts: options})
+	newTransactionTmpl.ExecuteTemplate(w, "base", newTransactionPageData{
+		Username: appmiddleware.GetUsername(r),
+		Accounts: options,
+	})
 }
 
 func NewTransactionPost(w http.ResponseWriter, r *http.Request) {
@@ -115,5 +119,9 @@ func renderNewTransactionError(w http.ResponseWriter, r *http.Request, userID in
 	}
 
 	w.WriteHeader(http.StatusUnprocessableEntity)
-	newTransactionTmpl.Execute(w, newTransactionPageData{Accounts: options, Error: msg})
+	newTransactionTmpl.ExecuteTemplate(w, "base", newTransactionPageData{
+		Username: appmiddleware.GetUsername(r),
+		Accounts: options,
+		Error:    msg,
+	})
 }

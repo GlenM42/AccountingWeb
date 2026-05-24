@@ -1,84 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Income Statement</title>
-    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-</head>
-<body>
-    <h1>Income Statement</h1>
+{{define "content"}}
+<div class="page-header">
+  <h4 class="page-title">Income Statement</h4>
+</div>
 
-    <form hx-get="/income_statement"
-          hx-target="#results"
-          hx-swap="innerHTML">
-        <label for="from">From:</label>
-        <input type="date" id="from" name="from" value="{{.From}}" required>
-
-        <label for="to">To:</label>
-        <input type="date" id="to" name="to" value="{{.To}}" required>
-
-        <button type="submit">Apply</button>
+<div class="card mb-4">
+  <div class="card-header">
+    <h4 class="card-title">Date Range</h4>
+  </div>
+  <div class="card-body">
+    <form hx-get="/income_statement" hx-target="#results" hx-swap="innerHTML">
+      <div class="row align-items-end g-3">
+        <div class="col-md-4">
+          <label for="from" class="form-label">From</label>
+          <input type="date" id="from" name="from" value="{{.From}}" class="form-control" required />
+        </div>
+        <div class="col-md-4">
+          <label for="to" class="form-label">To</label>
+          <input type="date" id="to" name="to" value="{{.To}}" class="form-control" required />
+        </div>
+        <div class="col-md-auto">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-filter me-1"></i> Apply
+          </button>
+        </div>
+      </div>
     </form>
+  </div>
+</div>
 
-    <div id="results">
-        {{template "results" .}}
-    </div>
-
-    <p><a href="/dashboard">Back to dashboard</a></p>
-
-{{define "results"}}
-    <h2>Revenue</h2>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr><th>Account</th><th>Total</th><th>% of Revenue</th></tr>
-        </thead>
-        <tbody>
-            {{if .RevenueRows}}
-                {{range .RevenueRows}}
-                <tr>
-                    <td>{{.AccountName}}</td>
-                    <td>${{.Total}}</td>
-                    <td>{{.Percent}}</td>
-                </tr>
-                {{end}}
-            {{else}}
-                <tr><td colspan="3">No revenue in this period.</td></tr>
-            {{end}}
-            <tr>
-                <td><strong>Total Revenue</strong></td>
-                <td><strong>${{.TotalRevenue}}</strong></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>Expenses</h2>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr><th>Account</th><th>Total</th><th>% of Expenses</th></tr>
-        </thead>
-        <tbody>
-            {{if .ExpenseRows}}
-                {{range .ExpenseRows}}
-                <tr>
-                    <td>{{.AccountName}}</td>
-                    <td>${{.Total}}</td>
-                    <td>{{.Percent}}</td>
-                </tr>
-                {{end}}
-            {{else}}
-                <tr><td colspan="3">No expenses in this period.</td></tr>
-            {{end}}
-            <tr>
-                <td><strong>Total Expenses</strong></td>
-                <td><strong>${{.TotalExpenses}}</strong></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>Net Income: ${{.NetIncome}} ({{.NetIncomePercent}} of revenue)</h2>
+<div id="results">
+  {{template "results" .}}
+</div>
 {{end}}
 
-</body>
-</html>
+{{define "results"}}
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-header">
+        <h4 class="card-title">Revenue</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr><th>Account</th><th class="text-end">Total</th><th class="text-end">% of Revenue</th></tr>
+          </thead>
+          <tbody>
+            {{if .RevenueRows}}
+              {{range .RevenueRows}}
+              <tr>
+                <td>{{.AccountName}}</td>
+                <td class="text-end">${{.Total}}</td>
+                <td class="text-end">{{.Percent}}</td>
+              </tr>
+              {{end}}
+            {{else}}
+              <tr><td colspan="3" class="text-center text-muted fst-italic">No revenue in this period.</td></tr>
+            {{end}}
+          </tbody>
+          <tfoot>
+            <tr class="table-success fw-bold">
+              <td>Total Revenue</td>
+              <td class="text-end">${{.TotalRevenue}}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-header">
+        <h4 class="card-title">Expenses</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr><th>Account</th><th class="text-end">Total</th><th class="text-end">% of Expenses</th></tr>
+          </thead>
+          <tbody>
+            {{if .ExpenseRows}}
+              {{range .ExpenseRows}}
+              <tr>
+                <td>{{.AccountName}}</td>
+                <td class="text-end">${{.Total}}</td>
+                <td class="text-end">{{.Percent}}</td>
+              </tr>
+              {{end}}
+            {{else}}
+              <tr><td colspan="3" class="text-center text-muted fst-italic">No expenses in this period.</td></tr>
+            {{end}}
+          </tbody>
+          <tfoot>
+            <tr class="table-danger fw-bold">
+              <td>Total Expenses</td>
+              <td class="text-end">${{.TotalExpenses}}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="card-category mb-0">Summary</p>
+            <h4 class="card-title mb-0">Net Income</h4>
+          </div>
+          <div class="text-end">
+            <h3 class="mb-0 text-primary fw-bold">${{.NetIncome}}</h3>
+            <small class="text-muted">{{.NetIncomePercent}} of revenue</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

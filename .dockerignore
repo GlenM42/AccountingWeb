@@ -1,0 +1,7 @@
+.env
+
+theme/
+.git/
+.claude/
+.devcontainer/
+*.md

@@ -1,60 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Balance Sheet</title>
-</head>
-<body>
-    <h1>Balance Sheet</h1>
+{{define "content"}}
+<div class="page-header">
+  <h4 class="page-title">Balance Sheet</h4>
+</div>
 
-    <h2>Assets</h2>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr><th>Name</th><th>Balance</th></tr>
-        </thead>
-        <tbody>
+<div class="row">
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-header">
+        <h4 class="card-title">Assets</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr><th>Account</th><th class="text-end">Balance</th></tr>
+          </thead>
+          <tbody>
             {{range .Assets}}
             <tr>
-                <td>{{.Name}}</td>
-                <td>${{.Balance}}</td>
+              <td>{{.Name}}</td>
+              <td class="text-end">${{.Balance}}</td>
             </tr>
             {{end}}
-            <tr>
-                <td><strong>Total</strong></td>
-                <td><strong>${{.TotalAssets}}</strong></td>
+          </tbody>
+          <tfoot>
+            <tr class="table-primary fw-bold">
+              <td>Total Assets</td>
+              <td class="text-end">${{.TotalAssets}}</td>
             </tr>
-        </tbody>
-    </table>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
 
-    <h2>Liabilities</h2>
-    <table border="1" cellpadding="6">
-        <thead>
-            <tr><th>Name</th><th>Balance</th></tr>
-        </thead>
-        <tbody>
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-header">
+        <h4 class="card-title">Liabilities</h4>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr><th>Account</th><th class="text-end">Balance</th></tr>
+          </thead>
+          <tbody>
             {{range .Liabilities}}
             <tr>
-                <td>{{.Name}}</td>
-                <td>${{.Balance}}</td>
+              <td>{{.Name}}</td>
+              <td class="text-end">${{.Balance}}</td>
             </tr>
             {{end}}
-            <tr>
-                <td><strong>Total</strong></td>
-                <td><strong>${{.TotalLiabilities}}</strong></td>
+          </tbody>
+          <tfoot>
+            <tr class="table-warning fw-bold">
+              <td>Total Liabilities</td>
+              <td class="text-end">${{.TotalLiabilities}}</td>
             </tr>
-        </tbody>
-    </table>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <h2>Equity</h2>
-    <table border="1" cellpadding="6">
-        <tbody>
-            <tr>
-                <td><strong>Total Equity (Assets − Liabilities)</strong></td>
-                <td><strong>${{.TotalEquity}}</strong></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <p><a href="/dashboard">Back to dashboard</a></p>
-</body>
-</html>
+<div class="row">
+  <div class="col-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <p class="card-category mb-0">Equity</p>
+            <h4 class="card-title mb-0">Total Equity (Assets − Liabilities)</h4>
+          </div>
+          <h3 class="mb-0 text-primary fw-bold">${{.TotalEquity}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

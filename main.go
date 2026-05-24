@@ -30,6 +30,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
+	// Serves theme static assets in development; in production Nginx handles /theme/ directly.
+	r.Handle("/theme/*", http.StripPrefix("/theme/", http.FileServer(http.Dir("./theme/kaiadmin-lite-1.2.0"))))
+
 	r.Get("/", handlers.LoginGet)
 	r.Get("/dashboard", handlers.DashboardGet)
 	r.Get("/login", handlers.LoginGet)

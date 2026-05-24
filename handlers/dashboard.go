@@ -7,7 +7,7 @@ import (
 	appmiddleware "accountingweb/middleware"
 )
 
-var dashboardTmpl = template.Must(template.ParseFiles("templates/dashboard.html"))
+var dashboardTmpl = template.Must(template.ParseFiles("templates/base.html", "templates/dashboard.html"))
 
 type dashboardPageData struct {
 	Username string
@@ -26,7 +26,7 @@ func DashboardGet(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	dashboardTmpl.Execute(w, dashboardPageData{
+	dashboardTmpl.ExecuteTemplate(w, "base", dashboardPageData{
 		Username: username,
 	})
 }

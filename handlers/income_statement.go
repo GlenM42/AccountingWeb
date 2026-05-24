@@ -15,17 +15,18 @@ import (
 	appmiddleware "accountingweb/middleware"
 )
 
-var incomeStatementTmpl = template.Must(template.ParseFiles("templates/income_statement.html"))
+var incomeStatementTmpl = template.Must(template.ParseFiles("templates/base.html", "templates/income_statement.html"))
 
 type incomeStatementPageData struct {
-	From              string
-	To                string
-	RevenueRows       []incomeRow
-	ExpenseRows       []incomeRow
-	TotalRevenue      string
-	TotalExpenses     string
-	NetIncome         string
-	NetIncomePercent  string
+	Username         string
+	From             string
+	To               string
+	RevenueRows      []incomeRow
+	ExpenseRows      []incomeRow
+	TotalRevenue     string
+	TotalExpenses    string
+	NetIncome        string
+	NetIncomePercent string
 }
 
 type incomeRow struct {
@@ -99,6 +100,7 @@ func IncomeStatementGet(w http.ResponseWriter, r *http.Request) {
 	expenseRows, totalExpenses := toSortedRows(expenseTotals)
 
 	data := incomeStatementPageData{
+		Username:         appmiddleware.GetUsername(r),
 		From:             from,
 		To:               to,
 		RevenueRows:      revenueRows,
@@ -114,7 +116,7 @@ func IncomeStatementGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	incomeStatementTmpl.Execute(w, data)
+	incomeStatementTmpl.ExecuteTemplate(w, "base", data)
 }
 
 func toSortedRows(totals map[string]float64) ([]incomeRow, float64) {
@@ -124,7 +126,9 @@ func toSortedRows(totals map[string]float64) ([]incomeRow, float64) {
 		names = append(names, name)
 		total += v
 	}
-	sort.Strings(names)
+	sort.Slice(names, func(i, j int) bool {
+		return totals[names[i]] > totals[names[j]]
+	})
 
 	var rows []incomeRow
 	for _, name := range names {
