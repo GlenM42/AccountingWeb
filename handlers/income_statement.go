@@ -91,8 +91,14 @@ func IncomeStatementGet(w http.ResponseWriter, r *http.Request) {
 		if tx.CreditAccountType == "revenue" {
 			revenueTotals[tx.CreditAccountName] += amount
 		}
+		if tx.DebitAccountType == "revenue" {
+			revenueTotals[tx.DebitAccountName] -= amount
+		}
 		if tx.DebitAccountType == "expense" {
 			expenseTotals[tx.DebitAccountName] += amount
+		}
+		if tx.CreditAccountType == "expense" {
+			expenseTotals[tx.CreditAccountName] -= amount
 		}
 	}
 
